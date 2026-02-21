@@ -1,0 +1,69 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "MineMath Game Assets Configuration"
+  },
+  "player": {
+    "STEVE": {
+      "id": "STEVE",
+      "name": "Steve",
+      "src": "public/steve.png",
+      "width": 64,
+      "height": 64
+    }
+  },
+  "enemies": {
+    "ZOMBIE": {
+      "id": "ZOMBIE",
+      "name": "Zombie",
+      "src": "public/zombie.png"
+    },
+    "SKELETON": {
+      "id": "SKELETON",
+      "name": "Skeleton",
+      "src": "public/skeleton.png"
+    },
+    "HARD_SKELETON": {
+      "id": "HARD_SKELETON",
+      "name": "Hard Skeleton",
+      "src": "public/skeleton.png",
+      "style": {
+        "filter": "hue-rotate(-20deg) saturate(1.5)"
+      }
+    }
+  },
+  "items": {
+    "DIAMOND": {
+      "id": "DIAMOND",
+      "name": "Diamond",
+      "src": "public/diamond.webp"
+    }
+  },
+  "weapons": {
+    "WOOD": {
+      "id": "WOOD",
+      "name": "Wooden Sword",
+      "src": "public/sword_wood.png"
+    },
+    "STONE": {
+      "id": "STONE",
+      "name": "Stone Sword",
+      "src": "public/sword_stone.png"
+    },
+    "IRON": {
+      "id": "IRON",
+      "name": "Iron Sword",
+      "src": "public/sword_iron.png"
+    },
+    "DIAMOND": {
+      "id": "DIAMOND",
+      "name": "Diamond Sword",
+      "src": "public/sword_diamond.png"
+    },
+    "NETHERITE": {
+      "id": "NETHERITE",
+      "name": "Netherite Sword",
+      "src": "public/sword_netherite.png"
+    }
+  }
+}
