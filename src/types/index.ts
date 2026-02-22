@@ -60,7 +60,7 @@ export interface FlyingResource {
   emoji: string;
 }
 
-export type WeaponTier = 'WOOD' | 'STONE' | 'IRON' | 'DIAMOND' | 'NETHERITE';
+export type WeaponTier = 'WOOD' | 'STONE' | 'IRON' | 'DIAMOND' | 'NETHERITE' | 'VICTORY';
 
 export interface Weapon {
   tier: WeaponTier;
@@ -79,9 +79,12 @@ export interface Weapon {
 
 export type DifficultyMode = 'BASIC' | 'ADVANCED';
 
+export type GameOverReason = 'DEFEAT' | 'VICTORY';
+
 export interface GameState {
   isPlaying: boolean;
   isGameOver: boolean;
+  gameOverReason: GameOverReason;
   difficultyMode: DifficultyMode;
   selectedTable: number[]; // 選擇的數字範圍（1-9），空陣列表示隨機混合
   score: number;

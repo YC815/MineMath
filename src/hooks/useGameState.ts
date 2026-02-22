@@ -29,6 +29,7 @@ export function useGameState() {
   const [gameState, setGameState] = useState<GameState>({
     isPlaying: false,
     isGameOver: false,
+    gameOverReason: 'DEFEAT',
     difficultyMode: 'BASIC',
     selectedTable: [],
     score: 0,
@@ -56,6 +57,7 @@ export function useGameState() {
     setGameState({
       isPlaying: true,
       isGameOver: false,
+      gameOverReason: 'DEFEAT',
       difficultyMode: mode,
       selectedTable: selectedTable,
       score: 0,
@@ -113,11 +115,17 @@ export function useGameState() {
   }, []);
 
   const takeDamage = useCallback(() => {
-    setGameState(prev => ({
-      ...prev,
-      health: prev.health - 1,
-      combo: 0
-    }));
+    setGameState(prev => {
+      const newHealth = prev.health - 1;
+      const isGameOver = newHealth <= 0;
+      return {
+        ...prev,
+        health: newHealth,
+        combo: 0,
+        isGameOver: isGameOver,
+        gameOverReason: isGameOver ? 'DEFEAT' : prev.gameOverReason
+      };
+    });
   }, []);
 
   const addScore = useCallback((points: number) => {
@@ -154,10 +162,23 @@ export function useGameState() {
   const upgradeWeapon = useCallback((tier: WeaponTier) => {
     const cost = WEAPONS[tier].cost;
     let success = false;
-    
+
     setGameState(prev => {
       if (prev.resources.diamond >= cost) {
         success = true;
+        // 如果鍛造到通關劍，直接觸發勝利
+        if (tier === 'VICTORY') {
+          return {
+            ...prev,
+            resources: {
+              ...prev.resources,
+              diamond: prev.resources.diamond - cost
+            },
+            currentWeapon: tier,
+            isGameOver: true, // 通關也算遊戲結束，顯示勝利畫面
+            gameOverReason: 'VICTORY'
+          };
+        }
         return {
           ...prev,
           resources: {
@@ -170,7 +191,7 @@ export function useGameState() {
       }
       return prev;
     });
-    
+
     return success;
   }, []);
 

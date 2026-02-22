@@ -75,11 +75,25 @@ export const WEAPONS: Record<WeaponTier, Weapon> = {
       speedModifier: 0.5, // 50% speed
       dodgeChance: 0.3
     }
+  },
+  VICTORY: {
+    tier: 'VICTORY',
+    name: '通關',
+    damage: 10,
+    emoji: '🏆',
+    color: 'text-yellow-400',
+    cost: 80,
+    description: '你已精通數學！鍛造此劍即可通關',
+    stats: {
+      scoreMultiplier: 10,
+      speedModifier: 0.3,
+      dodgeChance: 0.5
+    }
   }
 };
 
 // Define progression order for the UI
-export const WEAPON_ORDER: WeaponTier[] = ['WOOD', 'STONE', 'IRON', 'DIAMOND', 'NETHERITE'];
+export const WEAPON_ORDER: WeaponTier[] = ['WOOD', 'STONE', 'IRON', 'DIAMOND', 'NETHERITE', 'VICTORY'];
 
 export const BIOMES: Record<string, BiomeConfig> = {
   PLAINS: {
