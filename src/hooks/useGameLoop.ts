@@ -13,7 +13,7 @@ interface GameLoopDeps {
     biome: BiomeType;
     currentWeapon: WeaponTier;
     difficultyMode: DifficultyMode;
-    selectedTable: number | null;
+    selectedTable: number[];
   };
   enemies: Enemy[];
   flyingLoot: FlyingResource[];
@@ -143,10 +143,10 @@ export function useGameLoop(deps: GameLoopDeps) {
   return { spawnEnemy };
 }
 
-function generateProblem(biomeId: BiomeType, mode: DifficultyMode, selectedTable: number | null) {
-  // If a specific table is selected (e.g., 8 for 8x?), use that
-  if (selectedTable !== null && mode === 'BASIC') {
-    const a = selectedTable;
+function generateProblem(biomeId: BiomeType, mode: DifficultyMode, selectedTable: number[]) {
+  // If specific tables are selected, randomly pick one from the array
+  if (selectedTable.length > 0 && mode === 'BASIC') {
+    const a = selectedTable[Math.floor(Math.random() * selectedTable.length)];
     const b = Math.floor(Math.random() * 9) + 1; // 1-9
     const product = a * b;
     return { a, b, answer: product, display: `${a} × ${b} = ?` };

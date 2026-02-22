@@ -83,7 +83,7 @@ export interface GameState {
   isPlaying: boolean;
   isGameOver: boolean;
   difficultyMode: DifficultyMode;
-  selectedTable: number | null; // 1-9 for basic mode table selection
+  selectedTable: number[]; // 選擇的數字範圍（1-9），空陣列表示隨機混合
   score: number;
   depth: number; // Progression metric
   health: number;

@@ -3,22 +3,39 @@ import { BookOpen, BrainCircuit, ArrowLeft } from 'lucide-react';
 import { DifficultyMode } from '@/types';
 
 interface StartScreenProps {
-  onStartGame: (mode: DifficultyMode, selectedTable?: number | null) => void;
+  onStartGame: (mode: DifficultyMode, selectedTables: number[]) => void;
 }
 
 export const StartScreen: React.FC<StartScreenProps> = ({ onStartGame }) => {
   const [showTableSelection, setShowTableSelection] = useState(false);
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
 
   const handleBasicModeClick = () => {
     setShowTableSelection(true);
+    setSelectedNumbers([]);
   };
 
-  const handleTableSelect = (table: number | null) => {
-    onStartGame('BASIC', table);
+  const handleNumberToggle = (num: number) => {
+    setSelectedNumbers(prev => {
+      if (prev.includes(num)) {
+        return prev.filter(n => n !== num);
+      } else {
+        return [...prev, num].sort((a, b) => a - b);
+      }
+    });
+  };
+
+  const handleStartWithSelection = () => {
+    onStartGame('BASIC', selectedNumbers);
+  };
+
+  const handleRandomMix = () => {
+    onStartGame('BASIC', []);
   };
 
   const handleBack = () => {
     setShowTableSelection(false);
+    setSelectedNumbers([]);
   };
 
   if (showTableSelection) {
@@ -35,34 +52,66 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStartGame }) => {
         <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-green-400 to-green-800 mb-2 filter drop-shadow-lg text-center">
           選擇乘法表
         </h1>
-        <h2 className="text-2xl text-stone-400 mb-8 tracking-widest text-center">選擇你要練習的數字</h2>
+        <h2 className="text-2xl text-stone-400 mb-8 tracking-widest text-center">選擇你要練習的數字（可多選）</h2>
         
         <div className="bg-stone-800/80 p-6 rounded-xl border-4 border-stone-600 max-w-4xl w-full mb-8 shadow-2xl backdrop-blur-sm">
           <div className="grid grid-cols-5 gap-4 mb-6">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
               <button 
                 key={num}
-                onClick={() => handleTableSelect(num)}
-                className="flex flex-col items-center p-4 bg-stone-700 hover:bg-green-600 border-b-4 border-stone-900 active:border-b-0 active:translate-y-1 rounded-xl transition-all group"
+                onClick={() => handleNumberToggle(num)}
+                className={`flex flex-col items-center p-4 border-b-4 rounded-xl transition-all group ${
+                  selectedNumbers.includes(num)
+                    ? 'bg-green-600 border-green-800'
+                    : 'bg-stone-700 hover:bg-green-600 border-stone-900 active:border-b-0 active:translate-y-1'
+                }`}
               >
                 <span className="text-4xl font-bold text-white mb-1">{num}</span>
-                <span className="text-sm text-stone-400 group-hover:text-white">{num}×?</span>
+                <span className={`text-sm ${selectedNumbers.includes(num) ? 'text-white' : 'text-stone-400 group-hover:text-white'}`}>
+                  {num}×?
+                </span>
               </button>
             ))}
           </div>
 
-          <div className="border-t-2 border-stone-600 pt-6">
+          <div className="border-t-2 border-stone-600 pt-6 space-y-4">
             <button 
-              onClick={() => handleTableSelect(null)}
-              className="w-full flex flex-col items-center p-4 bg-stone-700 hover:bg-blue-600 border-b-4 border-stone-900 active:border-b-0 active:translate-y-1 rounded-xl transition-all group"
+              onClick={handleStartWithSelection}
+              disabled={selectedNumbers.length === 0}
+              className={`w-full flex flex-col items-center p-4 border-b-4 rounded-xl transition-all group ${
+                selectedNumbers.length > 0
+                  ? 'bg-green-600 hover:bg-green-500 border-green-800 active:border-b-0 active:translate-y-1'
+                  : 'bg-stone-600 border-stone-700 opacity-50 cursor-not-allowed'
+              }`}
             >
-              <span className="text-2xl font-bold text-white mb-1">混合模式</span>
-              <span className="text-sm text-stone-400 group-hover:text-white">隨機 2-9 乘法</span>
+              <span className="text-2xl font-bold text-white mb-1">
+                {selectedNumbers.length > 0 
+                  ? `開始練習 (${selectedNumbers.join(', ')} 乘法表)`
+                  : '請選擇至少一個數字'
+                }
+              </span>
+              <span className="text-sm text-white/80">
+                {selectedNumbers.length > 0 
+                  ? `只出現 ${selectedNumbers.join(', ')} 的乘法題目`
+                  : '點擊上方數字選擇範圍'
+                }
+              </span>
+            </button>
+
+            <button 
+              onClick={handleRandomMix}
+              className="w-full flex flex-col items-center p-4 bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 rounded-xl transition-all group"
+            >
+              <span className="text-2xl font-bold text-white mb-1">隨機混合模式</span>
+              <span className="text-sm text-white/80">隨機 1-9 乘法（全範圍）</span>
             </button>
           </div>
 
           <div className="text-center text-stone-500 text-lg mt-6">
-            點擊數字開始練習該乘法表
+            {selectedNumbers.length > 0 
+              ? `已選擇 ${selectedNumbers.length} 個數字，點擊上方綠色按鈕開始`
+              : '點擊數字選擇範圍，或直接選擇隨機混合模式'
+            }
           </div>
         </div>
       </div>
@@ -93,7 +142,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStartGame }) => {
           </button>
 
           <button 
-            onClick={() => onStartGame('ADVANCED')}
+            onClick={() => onStartGame('ADVANCED', [])}
             className="flex flex-col items-center p-6 bg-red-950/50 hover:bg-red-900/50 border-b-8 border-red-950 active:border-b-0 active:translate-y-2 rounded-xl transition-all group ring-2 ring-red-900/50"
           >
             <BrainCircuit className="w-16 h-16 text-red-400 mb-4 group-hover:scale-110 transition-transform" />
