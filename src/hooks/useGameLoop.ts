@@ -13,12 +13,14 @@ interface GameLoopDeps {
     biome: BiomeType;
     currentWeapon: WeaponTier;
     difficultyMode: DifficultyMode;
+    selectedTable: number | null;
   };
   enemies: Enemy[];
   flyingLoot: FlyingResource[];
   focusedEnemy: Enemy | null;
   upgradeModalOpen: boolean;
   actions: GameActions;
+  lastSpawnTime: number;
 }
 
 export function useGameLoop(deps: GameLoopDeps) {
@@ -41,7 +43,7 @@ export function useGameLoop(deps: GameLoopDeps) {
       x: 100,
       y: lane,
       config,
-      problem: generateProblem(gameState.biome, gameState.difficultyMode),
+      problem: generateProblem(gameState.biome, gameState.difficultyMode, gameState.selectedTable),
       isDying: false
     };
 
@@ -129,7 +131,7 @@ export function useGameLoop(deps: GameLoopDeps) {
     actions.setParticles(prev => prev.filter(p => p.life > 0).map(p => ({...p, life: p.life - 1})));
 
     requestRef.current = requestAnimationFrame(animate);
-  }, [gameState, enemies, flyingLoot, focusedEnemy, upgradeModalOpen, actions, spawnEnemy, deps.lastSpawnTime]);
+  }, [gameState, enemies, flyingLoot, focusedEnemy, upgradeModalOpen, actions, spawnEnemy]);
 
   useEffect(() => {
     if (gameState.isPlaying && !gameState.isGameOver) {
@@ -141,7 +143,15 @@ export function useGameLoop(deps: GameLoopDeps) {
   return { spawnEnemy };
 }
 
-function generateProblem(biomeId: BiomeType, mode: DifficultyMode) {
+function generateProblem(biomeId: BiomeType, mode: DifficultyMode, selectedTable: number | null) {
+  // If a specific table is selected (e.g., 8 for 8x?), use that
+  if (selectedTable !== null && mode === 'BASIC') {
+    const a = selectedTable;
+    const b = Math.floor(Math.random() * 9) + 1; // 1-9
+    const product = a * b;
+    return { a, b, answer: product, display: `${a} × ${b} = ?` };
+  }
+
   let min = 2, max = 9;
   if (biomeId === 'CAVE') { max = 12; }
   if (biomeId === 'NETHER') { min = 4; max = 15; }
@@ -153,8 +163,8 @@ function generateProblem(biomeId: BiomeType, mode: DifficultyMode) {
 
   if (mode === 'BASIC') {
     return { a, b, answer: product, display: `${a} × ${b} = ?` };
-  } 
-  
+  }
+
   const type = Math.floor(Math.random() * 3);
 
   if (type === 0) {

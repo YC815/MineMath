@@ -3,7 +3,7 @@ import { GameState, Enemy, Particle, FlyingResource, WeaponTier, DifficultyMode,
 import { MAX_HEALTH, WEAPONS, WEAPON_ORDER } from '@/constants';
 
 export interface GameActions {
-  startGame: (mode: DifficultyMode) => void;
+  startGame: (mode: DifficultyMode, selectedTable?: number | null) => void;
   returnToMenu: () => void;
   updateDepth: () => void;
   takeDamage: () => void;
@@ -30,6 +30,7 @@ export function useGameState() {
     isPlaying: false,
     isGameOver: false,
     difficultyMode: 'BASIC',
+    selectedTable: null,
     score: 0,
     depth: 0,
     health: MAX_HEALTH,
@@ -51,11 +52,12 @@ export function useGameState() {
   const [inventoryBounce, setInventoryBounce] = useState(false);
   const [lastSpawnTime, setLastSpawnTime] = useState(0);
 
-  const startGame = useCallback((mode: DifficultyMode) => {
+  const startGame = useCallback((mode: DifficultyMode, selectedTable: number | null = null) => {
     setGameState({
       isPlaying: true,
       isGameOver: false,
       difficultyMode: mode,
+      selectedTable: selectedTable,
       score: 0,
       depth: 0,
       health: MAX_HEALTH,

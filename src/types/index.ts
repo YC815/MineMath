@@ -83,6 +83,7 @@ export interface GameState {
   isPlaying: boolean;
   isGameOver: boolean;
   difficultyMode: DifficultyMode;
+  selectedTable: number | null; // 1-9 for basic mode table selection
   score: number;
   depth: number; // Progression metric
   health: number;
