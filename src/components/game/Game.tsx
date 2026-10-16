@@ -197,15 +197,16 @@ export const Game: React.FC = () => {
   const currentWeaponObj = WEAPONS[gameState.currentWeapon];
 
   return (
-    <div className={`relative w-full h-screen overflow-hidden bg-gradient-to-b ${currentBiome.bgGradient} font-pixel select-none`}>
-      <div className="absolute inset-0 z-0 flex flex-col justify-end pb-[20vh]"> 
+    <div className={`relative w-full h-[100dvh] overflow-hidden bg-gradient-to-b ${currentBiome.bgGradient} font-pixel select-none`}>
+      {/* 遊戲區域 - 頂部到 HUD 上方 */}
+      <div className="absolute inset-x-0 top-0 bottom-[clamp(4rem,15vh,6rem)] z-0 flex flex-col justify-end"> 
         {Array.from({ length: LANE_COUNT }).map((_, i) => (
           <Lane key={i} index={i} />
         ))}
-        <div className={`absolute bottom-0 w-full h-[20vh] ${currentBiome.groundColor} border-t-8 border-black/20 z-10`}></div>
+        <div className={`absolute bottom-0 w-full h-[15%] ${currentBiome.groundColor} border-t-8 border-black/20 z-10`}></div>
       </div>
 
-      <div className="absolute inset-0 z-10 flex flex-col justify-end pb-[20vh]">
+      <div className="absolute inset-x-0 top-0 bottom-[clamp(4rem,15vh,6rem)] z-10 flex flex-col justify-end">
         <Player currentWeapon={gameState.currentWeapon} />
 
         {enemies.map(enemy => (
